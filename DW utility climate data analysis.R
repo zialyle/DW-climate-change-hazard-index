@@ -38,7 +38,7 @@ compounding <- compounding %>% mutate(SLR_threshold = if_else(SLR_indicator == 1
 compounding <- compounding %>% mutate(wildfire_threshold = if_else(RC_avg_wildfire >= quantile(pws$RC_avg_wildfire, 0.9), 1, 0))
 compounding <- compounding %>% mutate(FT_threshold = if_else(RC_FT >= 0, 1, 0))
 compounding <- compounding %>% mutate(waterstress_threshold = if_else(water_stress >= 10, 1, 0))
-compounding <- compounding %>% mutate(energydemand_threshold = if_else(energy_demand >= 8, 1, 0))
+compounding <- compounding %>% mutate(energydemand_threshold = if_else(energy_demand >= quantile(pws$energy_demand, 0.9), 1, 0))
 
 compounding$sum <- compounding$heat_threshold + compounding$precip_threshold + compounding$SLR_threshold + compounding$wildfire_threshold + compounding$FT_threshold + compounding$waterstress_threshold + compounding$energydemand_threshold
 
