@@ -340,14 +340,14 @@ pws %>% ggplot() + geom_histogram(aes(x= RC_avg_wildfire), fill="#ffae34")+theme
   theme(text=element_text(family="Open Sans")) +  labs( x = "%∆ Fire Weather Index" )  + geom_vline(xintercept = 10.76143, linetype="dashed",color = "black", size=0.5) +ylim(0,9000)
 
 #Compounded Hazards - Thresholds
-compounding <- pws
-compounding <- compounding %>% mutate(heat_threshold = if_else(Diff_maxtemp_5d >= quantile(pws$Diff_maxtemp_5d, 0.9), 1, 0))
-compounding <- compounding %>% mutate(precip_threshold = if_else(RC_highest_precip_5d >= quantile(pws$RC_highest_precip_5d, 0.9), 1, 0))
-compounding <- compounding %>% mutate(SLR_threshold = if_else(SLR_indicator == 1, 1, 0))
-compounding <- compounding %>% mutate(wildfire_threshold = if_else(RC_avg_wildfire >= quantile(pws$RC_avg_wildfire, 0.9), 1, 0))
-compounding <- compounding %>% mutate(FT_threshold = if_else(RC_FT >= 0, 1, 0))
-compounding <- compounding %>% mutate(waterstress_threshold = if_else(water_stress >= 10, 1, 0))
-compounding <- compounding %>% mutate(energydemand_threshold = if_else(energy_demand >= 8, 1, 0))
+compounding_means <- pws
+compounding_means <- compounding_means %>% mutate(heat_threshold = if_else(Diff_maxtemp_5d >= mean(Diff_maxtemp_5d), 1, 0))
+compounding_means <- compounding_means %>% mutate(precip_threshold = if_else(RC_highest_precip_5d >= mean(RC_highest_precip_5d), 1, 0))
+compounding_means <- compounding_means %>% mutate(SLR_threshold = if_else(SLR_indicator >= 1, 1, 0))
+compounding_means <- compounding_means %>% mutate(wildfire_threshold = if_else(RC_avg_wildfire >= mean(RC_avg_wildfire), 1, 0))
+compounding_means <- compounding_means %>% mutate(FT_threshold = if_else(RC_FT >= mean(RC_FT), 1, 0))
+compounding_means <- compounding_means %>% mutate(waterstress_threshold = if_else(water_stress >= mean(water_stress), 1, 0))
+compounding_means <- compounding_means %>% mutate(energydemand_threshold = if_else(energy_demand >= mean(energy_demand), 1, 0))
 
 compounding$sum <- compounding$heat_threshold + compounding$precip_threshold + compounding$SLR_threshold + compounding$wildfire_threshold + compounding$FT_threshold + compounding$waterstress_threshold + compounding$energydemand_threshold
 
