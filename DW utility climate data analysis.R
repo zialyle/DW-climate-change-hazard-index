@@ -99,6 +99,18 @@ hazard_index_minmax <- hazard_index_minmax %>% mutate(energydemand_threshold = i
 
 hazard_index_minmax$sum <- hazard_index_minmax$heat_threshold + hazard_index_minmax$precip_threshold + hazard_index_minmax$SLR_threshold + hazard_index_minmax$wildfire_threshold + hazard_index_minmax$FT_threshold + hazard_index_minmax$waterstress_threshold + hazard_index_minmax$energydemand_threshold
 
+#Designating Population Bins
+# set up cut-off values 
+breaks <- c(0,10000,50000,100000, 250000, 500000, 1000000, 10000000)
+# specify interval/bin labels
+tags <- c("[0,10,000)","[10,000-50,000)", "[50,000-100,000)", "[100,000-250,000)", "[250,000-500,000)", "[500,000-1,000,000)","[1,000,000, 10,000,000)")
+# bucketing values into bins
+hazard_index_minmax$PopulationBins <- cut(pws$population_served_count, 
+                          breaks=breaks, 
+                          include.lowest=TRUE, 
+                          right=FALSE, 
+                          labels=tags)
+
 #Grouping Analysis - Min Max Linear Aggregation
 means <- c(mean(hazard_index_minmax$hazard_index),mean(hazard_index_minmax$heat_index), mean(hazard_index_minmax$FT_index), mean(hazard_index_minmax$extremeprecip_index), mean(hazard_index_minmax$waterrisk_index), mean(hazard_index_minmax$energydemand_index), mean(hazard_index_minmax$SLR_index), mean(hazard_index_minmax$wildfirerisk_index))
 hazard_index_minmax_means_NOAARegion <- hazard_index_minmax %>%  group_by(NOAA.Region) %>% summarise(hazard_index = mean(hazard_index), heat_index = mean(heat_index), FT_index = mean(FT_index), extremeprecip_index = mean(extremeprecip_index), waterrisk_index = mean(waterrisk_index), energydemand_index = mean(energydemand_index), SLR_index = mean(SLR_index), wildfire_index = mean(wildfirerisk_index))
