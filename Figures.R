@@ -59,6 +59,18 @@ pws.SP<-st_transform(x = pws.SP, crs = 4326)
 pws.SP$lon<-st_coordinates(pws.SP)[,1] # get coordinates
 pws.SP$lat<-st_coordinates(pws.SP)[,2] # get coordinates
 
+#Designating Population Bins
+# set up cut-off values 
+breaks <- c(0,10000,50000,100000, 250000, 500000, 1000000, 10000000)
+# specify interval/bin labels
+tags <- c("[0,10,000)","[10,000-50,000)", "[50,000-100,000)", "[100,000-250,000)", "[250,000-500,000)", "[500,000-1,000,000)","[1,000,000, 10,000,000)")
+# bucketing values into bins
+pws$PopulationBins <- cut(pws$population_served_count, 
+                                          breaks=breaks, 
+                                          include.lowest=TRUE, 
+                                          right=FALSE, 
+                                          labels=tags)
+
 #DW Utility Changes in Climate Hazard Figures
 #Figure 1 - Extreme Heat
 usmap + geom_point(data = pws, aes(x = utm_E,y =utm_N, color = Diff_maxtemp_5d), shape = 16) + labs(title = "Changes in Extreme Heat Events - RCP 4.5 Mid Century Projections") + 
@@ -182,6 +194,16 @@ hazard_index_minmax$hazard_index_group <- cut(hazard_index_minmax$hazard_index,
                                               include.lowest=TRUE, 
                                               right=FALSE, 
                                               labels=hazard_tags)
+usmap + geom_point(data = subset(hazard_index_minmax, hazard_index_group == "Minimal"), aes(x = utm_E,y =utm_N, color = hazard_index_group, size = PopulationBins), shape = 16) + 
+  geom_point(data = subset(hazard_index_minmax, hazard_index_group == "Low"), aes(x = utm_E,y =utm_N, color = hazard_index_group, size =  PopulationBins), shape = 16) + 
+  geom_point(data = subset(hazard_index_minmax, hazard_index_group == "Moderate"), aes(x = utm_E,y =utm_N, color = hazard_index_group, size =  PopulationBins), shape = 16) + 
+  geom_point(data = subset(hazard_index_minmax, hazard_index_group == "High"), aes(x = utm_E,y =utm_N, color = hazard_index_group, size =  PopulationBins), shape = 16) + 
+  labs(title = "Drinking Water Utilities (n = 42,786)", color = "Combined Hazard Index", size = "Population Bins") + 
+  theme(legend.position = "right", axis.title.x=element_blank(), axis.title.y = element_blank(), axis.ticks = element_blank()) + 
+  scale_color_manual(values = hazard_cols) +
+  scale_alpha_manual(values=c(0.1, 0.5, .6, 0.5)) +
+  theme(text=element_text(family="Open Sans"))
+
 usmap + geom_point(data = hazard_index_minmax, aes(x = utm_E,y =utm_N, color = hazard_index_group, size = PopulationBins), shape = 16) + 
   labs(title = "Drinking Water Utilities (n = 42,786)", color = "Combined Hazard Index") + 
   theme(legend.position = "right", axis.title.x=element_blank(), axis.title.y = element_blank(), axis.ticks = element_blank()) + 
@@ -340,14 +362,14 @@ pws %>% ggplot() + geom_histogram(aes(x= RC_avg_wildfire), fill="#ffae34")+theme
   theme(text=element_text(family="Open Sans")) +  labs( x = "%∆ Fire Weather Index" )  + geom_vline(xintercept = 10.76143, linetype="dashed",color = "black", size=0.5) +ylim(0,9000)
 
 #Compounded Hazards - Thresholds
-compounding_means <- pws
-compounding_means <- compounding_means %>% mutate(heat_threshold = if_else(Diff_maxtemp_5d >= mean(Diff_maxtemp_5d), 1, 0))
-compounding_means <- compounding_means %>% mutate(precip_threshold = if_else(RC_highest_precip_5d >= mean(RC_highest_precip_5d), 1, 0))
-compounding_means <- compounding_means %>% mutate(SLR_threshold = if_else(SLR_indicator >= 1, 1, 0))
-compounding_means <- compounding_means %>% mutate(wildfire_threshold = if_else(RC_avg_wildfire >= mean(RC_avg_wildfire), 1, 0))
-compounding_means <- compounding_means %>% mutate(FT_threshold = if_else(RC_FT >= mean(RC_FT), 1, 0))
-compounding_means <- compounding_means %>% mutate(waterstress_threshold = if_else(water_stress >= mean(water_stress), 1, 0))
-compounding_means <- compounding_means %>% mutate(energydemand_threshold = if_else(energy_demand >= mean(energy_demand), 1, 0))
+compounding <- pws
+compounding <- compounding %>% mutate(heat_threshold = if_else(Diff_maxtemp_5d >= mean(Diff_maxtemp_5d), 1, 0))
+compounding <- compounding %>% mutate(precip_threshold = if_else(RC_highest_precip_5d >= mean(RC_highest_precip_5d), 1, 0))
+compounding <- compounding %>% mutate(SLR_threshold = if_else(SLR_indicator >= 1, 1, 0))
+compounding <- compounding %>% mutate(wildfire_threshold = if_else(RC_avg_wildfire >= mean(RC_avg_wildfire), 1, 0))
+compounding <- compounding %>% mutate(FT_threshold = if_else(RC_FT >= mean(RC_FT), 1, 0))
+compounding <- compounding %>% mutate(waterstress_threshold = if_else(water_stress >= mean(water_stress), 1, 0))
+compounding <- compounding %>% mutate(energydemand_threshold = if_else(energy_demand >= mean(energy_demand), 1, 0))
 
 compounding$sum <- compounding$heat_threshold + compounding$precip_threshold + compounding$SLR_threshold + compounding$wildfire_threshold + compounding$FT_threshold + compounding$waterstress_threshold + compounding$energydemand_threshold
 
