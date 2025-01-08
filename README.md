@@ -1,6 +1,8 @@
-This code and database are associated with the manuscript, "Climate change hazard index reveals combined risks to United States drinking water utilities" by Lyle et al (2024).
+This code is associated with the manuscript, "Climate change hazard index reveals combined risks to United States drinking water utilities" by Lyle et al (2025).
 
-The_ pws_withhazards.csv_ file contains climate change hazard projections linked to United States public water systems (pws). That file is the input for the _DW utility climate data analysis.R_ file, which contains the code to develop the combined climate hazard index for drinking water utilities. The output file, identified as _Lyle et al_2024.csv_, contains contains climate change hazard index values linked to United States public water systems (pws), and will be published open access along with the manuscript.
+The_ pws_withhazards.csv_ file contains climate change hazard projections linked to United States public water systems (pws). That file is the input for the _DW utility climate data analysis.R_ file, which contains the code to develop the combined climate hazard index for drinking water utilities. The output file contains contains climate change hazard index values linked to United States public water systems (pws) is published here: 
+Lyle, Z., Samaras, C., & VanBriesen, J. (2025). US Drinking Water Utility Climate Change Projections and Combined Hazard Index Scores [Data set]. In Environmental Research - Climate. Zenodo. https://doi.org/10.5281/zenodo.14618746
+
 
 The columns in the database are as follows: 
 
