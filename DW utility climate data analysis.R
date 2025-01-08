@@ -18,7 +18,7 @@ library(factoextra)
 options(scipen=999)
 
 #Adding util projections to data frame
-ALLpws_withhazards <- read_csv("pws_withhazards.csv")
+ALLpws_withhazards <- read_csv("pws_withhazards_12052024.csv")
 pws <- data.frame(ALLpws_withhazards)
 
 #Potential risks to water resources (water risk or SLR)
@@ -131,6 +131,7 @@ hazard_index_minmax$exposure <- hazard_index_minmax$hazard_index * hazard_index_
 
 #Writing CSV with hazard index values for each utilty
 write.table(hazard_index_minmax[, c(1:16,47, 53:69, 72)], file = 'hazard_index_byutility.csv', col.names = TRUE, row.names = FALSE, sep = ",")
+#write.table(hazard_index_minmax, file = 'hazard_index_byutility_12052024.csv', col.names = TRUE, row.names = FALSE, sep = ",")
 
 #Correlation Analysis
 hazard_cor_table <- cor(hazard_index_minmax[, c('heat_index','extremeprecip_index','SLR_index', "wildfirerisk_index", 'energydemand_index', 'FT_index', 'waterrisk_index', 'hazard_index')], use='pairwise.complete.obs', method = "spearman")
